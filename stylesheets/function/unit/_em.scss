@@ -1,0 +1,6 @@
+/// Converts px font size to em.
+/// @param px $font-size
+/// @param px $context-font-size
+@function em ($font-size, $context-font-size){
+	@return 1em * ($font-size / $context-font-size);
+}

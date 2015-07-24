@@ -1,0 +1,33 @@
+@import "compass";
+@import "../../../../stylesheets/frappant";
+
+
+$xs: breakpoint(xs, $grid-columns: 2, $grid-column-width: 200px);
+$sm: breakpoint(sm, $grid-columns: 6, $grid-column-width: 120px);
+$md: breakpoint(md);
+
+
+@include grid-verbose-basics;
+
+
+@include breakpoint ($xs){
+	@include grid-verbose-fraction(xs);
+	@include grid-verbose-gutter;
+	.container {
+		@include column-grid-background($grid-columns, $grid-column-width, $grid-gutter-width, $force-fluid: true);
+	}
+}
+@include breakpoint ($sm){
+	@include grid-verbose-fraction(sm);
+	@include grid-verbose-gutter;
+	.container {
+		@include column-grid-background($grid-columns, $grid-column-width, $grid-gutter-width, $force-fluid: true);
+	}
+}
+@include breakpoint ($md){
+	@include grid-verbose-fraction(md);
+	@include grid-verbose-gutter;
+	.container {
+		@include column-grid-background($grid-columns, $grid-column-width, $grid-gutter-width, $force-fluid: true);
+	}
+}

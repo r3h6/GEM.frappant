@@ -1,0 +1,311 @@
+// A simple grid system
+//
+
+@import "compass";
+
+// ==========================================================================
+// Variables
+// ==========================================================================
+
+/// @type int Number of columns
+/// @access public
+$grid-columns          : 12 !default;
+
+/// @type px Column width
+/// @access public
+$grid-column-width     : 60px !default;
+
+/// @type px Gutter width
+/// @access public
+$grid-gutter-width     : 30px !default;
+
+/// @type left|right Direction of document flow.
+/// @access public
+$grid-direction        : left !default;
+
+/// Base font-size
+/// @type px
+/// @link http://compass-style.org/reference/compass/typography/vertical_rhythm/#const-base-font-size
+$base-font-size: 16px !default;
+
+/// Fallback font size for reseting the font size for inline-block grids if rem unit is not supported.
+/// @type px
+/// @link http://compass-style.org/reference/compass/typography/vertical_rhythm/#const-base-line-height
+/// @see grid-inline
+$grid-cell-font-size   : $base-font-size !default;
+
+
+// ==========================================================================
+// Functions
+// ==========================================================================
+
+@function grid-width ($span: $grid-columns) {
+  $grid-width: ($span * $grid-column-width) + (($span - 1) * $grid-gutter-width);
+  @return $grid-width;
+}
+
+@function grid-span ($span, $context: $grid-columns) {
+  @return percentage($span / $context);
+}
+
+@function grid-push ($span, $context: $grid-columns) {
+  @return percentage($span / $context);
+}
+
+@function grid-pull ($span, $context: $grid-columns) {
+  @return grid-push($span, $context) * -1;
+}
+
+@function grid-offset ($span, $context: $grid-columns) {
+  @return grid-push($span, $context);
+}
+
+@function grid-outdent ($span, $context: $grid-columns) {
+  @return grid-push($span, $context) * -1;
+}
+
+@function grid-fraction-name ($span, $context){
+  $fraction: $span / $context;
+  @if $fraction == 1 / 2 {
+    @return 'half';
+  } @else if $fraction == 1 / 3 {
+    @return 'one-third';
+  } @else if $fraction == 2 / 3 {
+    @return 'two-third';
+  } @else if $fraction == 1 / 4 {
+    @return 'one-fourth';
+  } @else if $fraction == 3 / 4 {
+    @return 'three-fourth';
+  } @else if $fraction == 1 / 5 {
+    @return 'one-fifth';
+  } @else if $fraction == 2 / 5 {
+    @return 'two-fifth';
+  } @else if $fraction == 3 / 5 {
+    @return 'three-fifth';
+  } @else if $fraction == 4 / 5 {
+    @return 'four-fifth';
+  } @else if $fraction == 1 / 6 {
+    @return 'one-sixth';
+  } @else if $fraction == 5 / 6 {
+    @return 'five-sixth';
+  }
+  @return '#{$span}of#{$context}';
+}
+
+// ==========================================================================
+// Mixins
+// ==========================================================================
+
+/// Semantic grid mixin for container
+@mixin grid-container (){
+  max-width: grid-width();
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/// Semantic grid mixin for creating a row (grid).
+@mixin grid-float () {
+  @include pie-clearfix;
+  margin-left: $grid-gutter-width / -2;
+  margin-right: $grid-gutter-width / -2;
+}
+
+/// Semantic grid mixin for creating a cell (column).
+/// @param int $span Number of columns to span.
+/// @param int $context
+@mixin grid-float-span ($span, $context: $grid-columns) {
+  @include box-sizing(border-box);
+  float: left;
+  width: grid-span($span, $context);
+  padding-left: $grid-gutter-width / 2;
+  padding-right: $grid-gutter-width / 2;
+}
+
+/// Semantic grid mixin for creating a grid (row).
+@mixin grid-inline (){
+  margin-left: $grid-gutter-width / -2;
+  margin-right: $grid-gutter-width / -2;
+  font-size: 0;
+  > * {
+    font-size: $base-font-size;
+    font-size: 1rem;
+  }
+}
+
+/// Semantic grid mixin for creating a cell (column).
+/// @param int $span Number of columns to span.
+/// @param int $context
+@mixin grid-inline-span ($span, $context: $grid-columns){
+  @include box-sizing(border-box);
+  display: inline-block;
+  vertical-align: top;
+  width: grid-span($span, $context);
+  padding-left: $grid-gutter-width / 2;
+  padding-right: $grid-gutter-width / 2;
+}
+
+@mixin grid-push ($span, $context: $grid-columns){
+  position: relative;
+  #{$grid-direction}: grid-push($span, $context);
+}
+
+@mixin grid-pull ($span, $context: $grid-columns){
+  position: relative;
+  #{$grid-direction}: grid-pull($span, $context);
+}
+
+@mixin grid-offset ($span, $context: $grid-columns){
+  margin-#{$grid-direction}: grid-offset($span, $context);
+}
+
+// ==========================================================================
+// Verbose
+// ==========================================================================
+
+/// Verbose basic grid styles.
+/// Use once globally.
+@mixin grid-verbose-basics (){
+    .g-container {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .g-float {
+      @include pie-clearfix;
+      > *[class*=g-span] {
+        float: $grid-direction;
+      }
+    }
+
+    .g-inline {
+      font-size: 0;
+      > * {
+        font-size: $base-font-size;
+        font-size: 1rem;
+      }
+      > *[class*=g-span] {
+        display: inline-block;
+        vertical-align: top;
+      }
+    }
+
+    *[class*=g-span] {
+      @include box-sizing(border-box);
+      width: 100%;
+    }
+
+    *[class*=g-pull],
+    *[class*=g-push] {
+      position: relative;
+    }
+
+    @include grid-verbose-size;
+    @include grid-verbose-gutter;
+}
+
+/// Verbose gutter size of the grid.
+/// Use once globally and within every breakpoint with other grid dimensions.
+///
+/// @example
+/// $lg = breakpoint(lg, $grid-column-width: 80px);
+/// @include breakpoint ($lg){
+///   @include grid-verbose-gutter;
+/// }
+@mixin grid-verbose-gutter (){
+    body {
+      margin-left: $grid-gutter-width / 2;
+      margin-right: $grid-gutter-width / 2;
+    }
+    *[class*=g-span] {
+      padding-left: $grid-gutter-width / 2;
+      padding-right: $grid-gutter-width / 2;
+    }
+    .g-float,
+    .g-inline {
+      margin-left: $grid-gutter-width / -2;
+      margin-right: $grid-gutter-width / -2;
+    }
+}
+
+/// Verbose max container size of the grid.
+/// Use once globally and within every breakpoint with other grid dimensions.
+///
+/// @example
+/// $lg = breakpoint(lg, $grid-column-width: 80px);
+/// @include breakpoint ($lg){
+///   @include grid-verbose-size;
+/// }
+@mixin grid-verbose-size (){
+    .g-container {
+      max-width: grid-width();
+    }
+}
+
+/// Verbose grid classes using a fraction as column.
+/// Generated class names are using english names for common fractions like
+/// half, one-third, three-fourth,...
+///
+/// @example
+///   .g-span-xs-half
+///   .g-span-xs-7of12
+///
+/// @param string $media Media suffix for class name.
+@mixin grid-verbose-fraction ($media: 'xs'){
+  @for $span from 1 to $grid-columns {
+    .g-span-#{$media}-#{grid-fraction-name($span, $grid-columns)}{
+      width: grid-span($span, $grid-columns);
+    }
+    .g-push-#{$media}-#{grid-fraction-name($span, $grid-columns)}{
+      #{$grid-direction}: grid-push($span, $grid-columns);
+    }
+    .g-pull-#{$media}-#{grid-fraction-name($span, $grid-columns)}{
+      #{$grid-direction}: grid-pull($span, $grid-columns);
+    }
+    .g-offset-#{$media}-#{grid-fraction-name($span, $grid-columns)}{
+      margin-#{$grid-direction}: grid-offset($span, $grid-columns);
+    }
+  }
+}
+
+/// Verbose class names respecting nested grids.
+/// The number 1 in the class name refeers always to one column.
+///
+/// @example
+///   .g-span-xs-1
+///
+/// @param string $media Media suffix for class name.
+@mixin grid-verbose-contextual ($media: 'xs'){
+    @for $context from 1 to $grid-columns {
+      .g-span-#{$media}-#{$context}{
+        width: grid-span($context, $grid-columns);
+      }
+      .g-push-#{$media}-#{$context}{
+        #{$grid-direction}: grid-push($context, $grid-columns);
+      }
+      .g-pull-#{$media}-#{$context}{
+        #{$grid-direction}: grid-pull($context, $grid-columns);
+      }
+      .g-offset-#{$media}-#{$context}{
+        margin-#{$grid-direction}: grid-offset($context, $grid-columns);
+      }
+
+      // Verbose context
+      @for $span from 1 to $context {
+        .g-span-#{$media}-#{$context} {
+          .g-span-#{$media}-#{$span}{
+            width: grid-span($span, $context);
+          }
+          .g-push-#{$media}-#{$span}{
+            #{$grid-direction}: grid-push($span, $context);
+          }
+          .g-pull-#{$media}-#{$span}{
+            #{$grid-direction}: grid-pull($span, $context);
+          }
+          .g-offset-#{$media}-#{$span}{
+            margin-#{$grid-direction}: grid-offset($span, $context);
+          }
+        }
+      }
+
+    }
+}

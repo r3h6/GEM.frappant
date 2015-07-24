@@ -1,0 +1,9 @@
+@import "compass";
+@import "../../../../stylesheets/frappant";
+
+.container {
+	@include column-grid-background($grid-columns, $grid-column-width, $grid-gutter-width, $force-fluid: true);
+}
+
+@include grid-verbose-basics;
+@include grid-verbose-fraction;

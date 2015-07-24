@@ -1,0 +1,6 @@
+/// Converts px font size to rem.
+/// @param px $font-size
+/// @param px $base-font-size
+@function rem ($font-size, $base-font-size: $base-font-size){
+	@return 1rem * ($font-size / $base-font-size);
+}

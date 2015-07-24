@@ -1,0 +1,25 @@
+@import "compass";
+@import "../../../../stylesheets/frappant";
+
+$sm: breakpoint(sm);
+
+@include breakpoint($sm){
+	.l-container {
+		@include grid-container;
+		@include column-grid-background($grid-columns, $grid-column-width, $grid-gutter-width, $force-fluid: true);
+	}
+	.l-content {
+		@include grid-float;
+	}
+	.l-main {
+		@include grid-float-span(8);
+		@include grid-push(2);
+	}
+	.l-left {
+		@include grid-float-span(2);
+		@include grid-pull(8);
+	}
+	.l-right {
+		@include grid-float-span(2);
+	}
+}

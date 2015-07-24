@@ -1,0 +1,108 @@
+/// Extra small screen / phone breakpoint
+/// @access public
+$screen-xs-min: 480px !default;
+
+/// Small screen / tablet breakpoint
+/// @access public
+$screen-sm-min: 768px !default;
+
+/// Medium screen / desktop breakpoint
+/// @access public
+$screen-md-min: 992px !default;
+
+/// Large screen / wide desktop breakpoint
+/// @access public
+$screen-lg-min: 1200px !default;
+
+// So media queries don't overlap when required, provide a maximum
+$screen-xs-max: ($screen-sm-min - 1) !default;
+$screen-sm-max: ($screen-md-min - 1) !default;
+$screen-md-max: ($screen-lg-min - 1) !default;
+
+/// Creates a breapoint.
+///
+/// @example
+///   $md = breakpoint(md);
+///   $custom = breakpoint("screen and (min-height: 100px)");
+///
+/// @param string $query The media query for this breakpoint or a keyword (xs, sm, md, lg, max-xs, max-sm, max-md, max-lg).
+/// @param px base-font-size
+/// @param px base-line-height
+/// @param int $grid-columns
+/// @param px $grid-columns-width
+/// @param px $grid-gutter-width
+/// @return list
+@function breakpoint (
+  $query,
+  $base-font-size: $base-font-size,
+  $base-line-height: $base-line-height,
+  $grid-columns: $grid-columns,
+  $grid-column-width: $grid-column-width,
+  $grid-gutter-width: $grid-gutter-width
+) {
+  @if $query == xs {
+    $query: "(min-width: #{$screen-xs-min})";
+  }
+  @if $query == sm {
+    $query: "(min-width: #{$screen-sm-min})";
+  }
+  @if $query == md {
+    $query: "(min-width: #{$screen-md-min})";
+  }
+  @if $query == lg {
+    $query: "(min-width: #{$screen-lg-min})";
+  }
+  @if $query == max-xs {
+    $query: "(max-width: #{$screen-xs-max})";
+  }
+  @if $query == max-sm {
+    $query: "(max-width: #{$screen-sm-max})";
+  }
+  @if $query == max-md {
+    $query: "(max-width: #{$screen-md-max})";
+  }
+  @if $query == max-lg {
+    $query: "(max-width: #{$screen-lg-max})";
+  }
+  @return $query $base-font-size $base-line-height $grid-columns $grid-column-width $grid-gutter-width;
+}
+
+/// Applies a breakpoint for some rules.
+///
+/// @example
+///   $sm = breakpoint(sm);
+///   .example {
+///     width: 100%;
+///     @include breakpoint ($sm){
+///       width: 50%;
+///     }
+///   }
+///
+/// @param list $breakpoint
+/// @content Styles within this breakpoint
+@mixin breakpoint ($breakpoint) {
+
+  $current-base-font-size: $base-font-size;
+  $current-base-line-height: $base-line-height;
+  $current-grid-columns: $grid-columns;
+  $current-grid-column-width: $grid-column-width;
+  $current-grid-gutter-width: $grid-gutter-width;
+
+
+  $base-font-size: nth($breakpoint, 2) !global;
+  $base-line-height: nth($breakpoint, 3) !global;
+  $grid-columns: nth($breakpoint, 4) !global;
+  $grid-column-width: nth($breakpoint, 5) !global;
+  $grid-gutter-width: nth($breakpoint, 6) !global;
+
+  @media #{unquote(nth($breakpoint, 1))} {
+    @content;
+  }
+
+  $base-font-size: $current-base-font-size !global;
+  $base-line-height: $current-base-line-height !global;
+  $grid-columns: $current-grid-columns !global;
+  $grid-column-width: $current-grid-column-width !global;
+  $grid-gutter-width: $current-grid-gutter-width !global;
+
+}

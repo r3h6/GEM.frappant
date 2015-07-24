@@ -1,0 +1,18 @@
+@import "compass";
+@import "../../../../stylesheets/frappant";
+
+$md: breakpoint(md);
+
+@include grid-verbose-basics;
+@include grid-verbose-fraction;
+
+.container {
+	@include column-grid-background($grid-columns, $grid-column-width, $grid-gutter-width, $force-fluid: true);
+}
+
+@include breakpoint ($md){
+	@include grid-verbose-fraction(md);
+	.container {
+		@include column-grid-background($grid-columns, $grid-column-width, $grid-gutter-width, $force-fluid: true);
+	}
+}

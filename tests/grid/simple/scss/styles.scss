@@ -1,0 +1,30 @@
+@import "compass";
+
+
+
+body {
+	font-family: sans-serif;
+}
+h1 {
+	border-bottom: 1px solid #000;
+}
+
+.container {
+	// background-color: tint(purple, 90%);
+}
+.g-float,
+.g-inline {
+	// @include opacity(.9);
+	// background-color: tint(blue, 80%);
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+[class*=g-span] {
+	// @include opacity(.9);
+	// background-color: tint(red, 30%);
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+.cell-content {
+	background-color: tint(purple, 90%);
+}
